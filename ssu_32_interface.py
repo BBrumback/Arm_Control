@@ -7,8 +7,10 @@ class Ssu32Interface(object):
     def __init__(self):
         self.sp = serial.Serial('/dev/ttyUSB0', 9600)
         self.joint_pulse_home = [0, 1480, 1480]
-        self.joint_pulse_range = [0, 810, 900]
+        self.joint_pulse_range = [0, -810, 900]
         self.joint_offset = [0, 0, 90]
+        self.joint_max = 90
+        self.joint_min = -90
         self.debugger = Logger("SSU32_INTERFACE", debug=True)
 
     def position_arm(self, angles, speed):
@@ -17,9 +19,10 @@ class Ssu32Interface(object):
             self.debugger.log("Setting angle of joint_{} to {}".format(number, angle))
 
     def set_angle(self, pin_number, angle, speed):
-        offset_angle = angle - self.joint_offset[pin_number]
-        pulse_width = self.angle_to_pulse(offset_angle, pin_number)
-        self.set_pwd(pin_number, pulse_width, speed)
+        if self.joint_min <= angle <= self.joint_max:
+            offset_angle = angle - self.joint_offset[pin_number]
+            pulse_width = self.angle_to_pulse(offset_angle, pin_number)
+            self.set_pwd(pin_number, pulse_width, speed)
 
     def set_pwd(self, pin_number, pulse_width, speed):
         pin = "#" + str(pin_number)

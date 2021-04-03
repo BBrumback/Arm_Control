@@ -6,4 +6,6 @@ if __name__ == '__main__':
     control_interface = Ssu32Interface()
     arm = Arm(physical_system=True)
 
-    angles = arm.set_position([6., 0., 3.25], 100)
+    #angles = arm.set_position([0., 0., 13.], 100)
+    arm.set_position([5., 0., 8.], 100)
+    #control_interface.set_angle(1, -10, 100)
